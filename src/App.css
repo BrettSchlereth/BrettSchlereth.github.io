@@ -1,38 +1,56 @@
-.App {
+* {
+  box-sizing:border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #1b262c;
+  margin: 15px;
+  padding: 15px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.4;
+  color: #bbe1fa;
+}
+
+title {
+  color: #bbe1fa;
+}
+
+h1 {
   text-align: center;
+  background-color: #0f4c75;
+  font-style: oblique;
+  font-size: 50px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+topnav {
+  background-color: #333;
+  overflow: hidden;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.topnav a {
+  float: left;
+  color: #3282b8;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #bbe1fa;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #3282b8;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+a {
+  color: #bbe1fa;
+  text-decoration: none;
 }
