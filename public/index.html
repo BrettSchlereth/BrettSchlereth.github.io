@@ -27,14 +27,37 @@
     <title>React App</title>
   </head>
   <body>
-    <h1>Brett Schlereth</h1>
-    <div class="topnav">
+    <h1 id="TitleMessage">PLHCSA Escape</h1>
+      <form name="myform" action="/action_page.php" onsubmit="return validateForm()" id="demo">
+        <input type="text" id="Password" name="Password" placeholder="Password"><br><br>
+        <input type="submit" value="Submit" onclick="myFunction()">
+      </form>
+      <script>
+      function myFunction() {
+        var password, text, inputField;
+
+
+        // Get the value of the input field with id="numb"
+        passwordValue = document.getElementById("Password").value
+        // If x is Not a Number or less than one or greater than 10
+        if (passwordValue != "hello") {
+          alert("Password Incorrect")
+        } else {
+          //text = "Password Accepted";
+          alert("Password Accepted")
+        }
+        getElementById("password").innerHTML = "Hello";
+      }
+      </script>
+
+<!---    <div class="topnav">
       <a class="active" href="#Home">Home</a>
       <a href="#Resume">Resume</a>
       <a href="#Projects">Projects</a>
       <a href="#BunkerDown">Bunker Down</a>
       <a href="#Contact">Contact</a>
 </div>
+-->
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--
