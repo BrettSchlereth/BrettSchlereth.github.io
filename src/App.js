@@ -1,10 +1,11 @@
  import React from 'react';
- import { Box, Card} from 'rebass'
+ import { Box, Card, Image} from 'rebass'
  import './App.css';
  import ProjectCards from './components/RebassCard.js'
  import { Switch, Route } from 'react-router-dom'
  import Header from './components/Header.js'
-
+ import bunkerDownHeader from './images/1920x620BunkerDown.png'
+ import BlackjackGame from './components/BlackjackGame.js'
 
 const App = () => (
   <div className='App'>
@@ -25,6 +26,7 @@ const BunkerDown = () => (
   <div className='BunkerDown'>
     <Header pageName="Bunker Down"/>
     <div>
+      <Image src={bunkerDownHeader}/>
       Bunker Down is an arcade-style survival game I developed using the Godot Game Engine.
       The goal is to avoid the bombs falling from the sky, collect coins, and make your way to
       the underground bunker below.
@@ -54,9 +56,7 @@ const Resume = () => (
 const BlackjackAI = () => (
   <div className='BlackjackAI'>
     <Header pageName="Blackjack AI"/>
-    <div>
-      content
-    </div>
+    <BlackjackGame/>
   </div>
 
 )
