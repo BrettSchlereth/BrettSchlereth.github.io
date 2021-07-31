@@ -14,7 +14,7 @@ const headerStyle = {
 
 const Header = ({pageName}) => {
   return (
-    <div class="container">
+    <div className="container">
       <HomeButton/>
       <div style={headerStyle}>{pageName}</div>
     </div>

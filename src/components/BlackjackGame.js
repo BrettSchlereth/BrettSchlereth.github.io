@@ -14,10 +14,12 @@ const playerSideStyle = {
 }
 
 const aiSideStyle = {
+  height: '100%',
   width: '50%',
 }
 
 const dealerStyle = {
+  height: 'auto',
   maxHeight: '25em',
   background: 'blue',
 }
@@ -31,13 +33,14 @@ const aiStyle = {
 }
 
 const cardsDisplayStyle = {
-  display: 'flex',
-  height: '25em',
+  display: 'block',
+  height: '100%',
+  margin: 'auto',
 }
 
 const cardStyle = {
-  maxHeight: '15em',
-  width: 'auto',
+  height: 'auto',
+  maxWidth: '20%',
 }
 
 const gameButtons = {
@@ -53,6 +56,7 @@ const gameButton = {
 }
 
 const BlackjackGame = () => {
+  startGame()
   return (
     <Box style={gameStyle}>
       <Box style={playerSideStyle}>
@@ -72,11 +76,12 @@ const BlackjackGame = () => {
           <Image style={cardStyle} src={blackjackImage}/>
           <Image style={cardStyle} src={blackjackImage}/>
           <Image style={cardStyle} src={blackjackImage}/>
+          <Image style={cardStyle} src={blackjackImage}/>
         </Flex>
         <div style={gameButtons}>
-          <button style={gameButton}>HIT</button>
-          <button style={gameButton}>STAY</button>
-          <button style={gameButton}>PLAY AGAIN</button>
+          <button onClick={console.log('hello')} style={gameButton}>HIT</button>
+          <button onClick={stay()} style={gameButton}>STAY</button>
+          <button onClick={restart()} style={gameButton}>PLAY AGAIN</button>
         </div>
         </Box>
       </Box>
@@ -100,6 +105,22 @@ const BlackjackGame = () => {
       </Box>
     </Box>
 )
+}
+
+function startGame() {
+  console.log('start')
+}
+
+function hit() {
+  console.log('hit')
+}
+
+function stay() {
+  console.log('stay')
+}
+
+function restart() {
+  console.log('restart')
 }
 
 export default BlackjackGame;
