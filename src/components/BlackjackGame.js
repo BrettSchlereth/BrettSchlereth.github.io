@@ -2,6 +2,7 @@ import React from 'react';
 import '../App.css';
 import { Flex, Box, Image } from 'rebass'
 import blackjackImage from '../images/BlackjackImage.png'
+import CardsDisplay from './CardsDisplay.js'
 
 const gameStyle = {
   background: 'brown',
@@ -55,6 +56,13 @@ const gameButton = {
   width: '50%'
 }
 
+var deck;
+var aiDeck;
+var dealerHand;
+var playerHand;
+var aiDealerHand;
+var aiHand;
+
 const BlackjackGame = () => {
   startGame()
   return (
@@ -62,24 +70,13 @@ const BlackjackGame = () => {
       <Box style={playerSideStyle}>
         <Box style={dealerStyle}>
           Dealer
-          <Box style={cardsDisplayStyle}>
-            <Image style={cardStyle} src={blackjackImage}/>
-            <Image style={cardStyle} src={blackjackImage}/>
-            <Image style={cardStyle} src={blackjackImage}/>
-          </Box>
+          <CardsDisplay hand={dealerHand} playerType="dealer"/>
         </Box>
       <Box style={playerStyle}>
         Player
-        <Flex style={cardsDisplayStyle}>
-          <Image style={cardStyle} src={blackjackImage}/>
-          <Image style={cardStyle} src={blackjackImage}/>
-          <Image style={cardStyle} src={blackjackImage}/>
-          <Image style={cardStyle} src={blackjackImage}/>
-          <Image style={cardStyle} src={blackjackImage}/>
-          <Image style={cardStyle} src={blackjackImage}/>
-        </Flex>
+        <CardsDisplay hand={playerHand}/>
         <div style={gameButtons}>
-          <button onClick={console.log('hello')} style={gameButton}>HIT</button>
+          <button onClick={hit()} style={gameButton}>HIT</button>
           <button onClick={stay()} style={gameButton}>STAY</button>
           <button onClick={restart()} style={gameButton}>PLAY AGAIN</button>
         </div>
@@ -88,19 +85,11 @@ const BlackjackGame = () => {
       <Box style={aiSideStyle}>
         <Box style={dealerStyle}>
           AI Dealer
-          <Box style={cardsDisplayStyle}>
-            <Image style={cardStyle} src={blackjackImage}/>
-            <Image style={cardStyle} src={blackjackImage}/>
-          </Box>
+          <CardsDisplay hand={aiDealerHand} playerType="dealer"/>
         </Box>
         <Box style={aiStyle}>
           AI Player
-          <Box style={cardsDisplayStyle}>
-            <Image style={cardStyle} src={blackjackImage}/>
-            <Image style={cardStyle} src={blackjackImage}/>
-            <Image style={cardStyle} src={blackjackImage}/>
-            <Image style={cardStyle} src={blackjackImage}/>
-          </Box >
+          <CardsDisplay hand={aiHand}/>
         </Box>
       </Box>
     </Box>
@@ -108,7 +97,69 @@ const BlackjackGame = () => {
 }
 
 function startGame() {
+  buildDeck()
+  dealCards()
+  //check for blackjack
+  //get player moves until stay or bust
+  //get dealer moves
+  //let the ai play
+  //let the ai's dealer play
+  //add scores
+  //clear on restart
   console.log('start')
+}
+
+function buildDeck() {
+  deck = []
+  for (var i = 0; i < 8; i++) {
+    for (var j = 2; j < 12; j++) {
+      if (j == 10) {
+        deck.push(j)
+        deck.push(j)
+        deck.push(j)
+      }
+      deck.push(j)
+    }
+  }
+  shuffle(deck)
+  aiDeck = deck
+}
+
+function dealCards() {
+  playerHand = [];
+  dealerHand = [];
+  aiHand = [];
+  aiDealerHand = [];
+  for (var i = 0; i < 2; i++) {
+    playerHand.push(deck.pop())
+    dealerHand.push(deck.pop())
+  }
+  aiHand = playerHand
+  aiDealerHand = dealerHand
+}
+
+function shuffle(array) {
+  var currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
+
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 
 function hit() {
