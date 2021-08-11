@@ -60,21 +60,9 @@ const CardsDisplay = ({hand, playerType}) => {
   return (
     <Box style={cardsDisplayStyle}>
       {cards}
-      {getButtons(playerType)}
+      // {getButtons(playerType)}
     </Box>
   );
-}
-
-function hit() {
-
-}
-
-function stay() {
-
-}
-
-function restart() {
-
 }
 
 function getCard(card, index) {
@@ -84,15 +72,15 @@ function getCard(card, index) {
 }
 
 function getButtons(playerType) {
-  if (playerType === "player") {
-    return (
-      <div style={gameButtons}>
-        <button onClick={hit()} style={gameButton}>HIT</button>
-        <button onClick={stay()} style={gameButton}>STAY</button>
-        <button onClick={restart()} style={gameButton}>PLAY AGAIN</button>
-      </div>
-    );
-  }
+  // if (playerType === "player") {
+  //   return (
+  //     // <div style={gameButtons}>
+  //     //   <button onClick={hit} style={gameButton}>HIT</button>
+  //     //   <button onClick={stay} style={gameButton}>STAY</button>
+  //     //   <button onClick={restart} style={gameButton}>PLAY AGAIN</button>
+  //     // </div>
+  //   );
+  // }
 }
 
 export default CardsDisplay;

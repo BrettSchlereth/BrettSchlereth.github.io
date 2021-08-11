@@ -32,6 +32,18 @@ const aiStyle = {
   background: 'gray',
 }
 
+const gameButtons = {
+  margin: 'auto',
+  width: '100%',
+  align: 'center',
+}
+
+const gameButton = {
+  textAlign: 'center',
+  height: '10%',
+  width: '50%'
+}
+
 
 var deck;
 var aiDeck;
@@ -52,6 +64,11 @@ const BlackjackGame = () => {
       <Box style={playerStyle}>
         Player
         <CardsDisplay hand={playerHand} playerType="player"/>
+        <div style={gameButtons}>
+          <button onClick={hit} style={gameButton}>HIT</button>
+          <button onClick={stay} style={gameButton}>STAY</button>
+          <button onClick={restart} style={gameButton}>PLAY AGAIN</button>
+        </div>
         </Box>
       </Box>
       <Box style={aiSideStyle}>
@@ -128,24 +145,24 @@ function shuffle(array) {
   return array;
 }
 
+function hit() {
+ console.log("hit")
+ playerHand.push(deck.pop())
+}
+
+function stay() {
+
+}
+
+function restart() {
+
+}
+
 // function getRandomIntInclusive(min, max) {
 //   min = Math.ceil(min);
 //   max = Math.floor(max);
 //   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 // }
 
-function hit() {
-  console.log('hit')
-  playerHand.push(deck.pop())
-
-}
-
-function stay() {
-  console.log('stay')
-}
-
-function restart() {
-  console.log('restart')
-}
 
 export default BlackjackGame;
