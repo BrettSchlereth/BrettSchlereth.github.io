@@ -22,6 +22,18 @@ const cardStyle = {
   maxWidth: '20%',
 }
 
+const gameButtons = {
+  margin: 'auto',
+  width: '100%',
+  align: 'center',
+}
+
+const gameButton = {
+  textAlign: 'center',
+  height: '10%',
+  width: '50%'
+}
+
 const cardValues = {
   2: twoOfSpades,
   3: threeOfSpades,
@@ -36,25 +48,51 @@ const cardValues = {
 }
 
 const CardsDisplay = ({hand, playerType}) => {
+
   var cards = []
   for (var i=0; i<hand.length; i++) {
       var card = hand[i]
-      cards.push(getCard(card))
-      if (playerType == "dealer") {
+      cards.push(getCard(card, i))
+      if (playerType === "dealer") {
         i = hand.length
       }
   }
   return (
     <Box style={cardsDisplayStyle}>
       {cards}
+      {getButtons(playerType)}
     </Box>
   );
 }
 
-function getCard(card) {
+function hit() {
+
+}
+
+function stay() {
+
+}
+
+function restart() {
+
+}
+
+function getCard(card, index) {
   return (
-    <Image style={cardStyle} src={cardValues[card]}/>
+    <Image key={index.toString()} style={cardStyle} src={cardValues[card]}/>
   );
+}
+
+function getButtons(playerType) {
+  if (playerType === "player") {
+    return (
+      <div style={gameButtons}>
+        <button onClick={hit()} style={gameButton}>HIT</button>
+        <button onClick={stay()} style={gameButton}>STAY</button>
+        <button onClick={restart()} style={gameButton}>PLAY AGAIN</button>
+      </div>
+    );
+  }
 }
 
 export default CardsDisplay;

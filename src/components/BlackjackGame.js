@@ -1,7 +1,6 @@
 import React from 'react';
 import '../App.css';
-import { Flex, Box, Image } from 'rebass'
-import blackjackImage from '../images/BlackjackImage.png'
+import { Box } from 'rebass'
 import CardsDisplay from './CardsDisplay.js'
 
 const gameStyle = {
@@ -26,35 +25,13 @@ const dealerStyle = {
 }
 
 const playerStyle = {
-  background: 'red',
+  background: 'green',
 }
 
 const aiStyle = {
   background: 'gray',
 }
 
-const cardsDisplayStyle = {
-  display: 'block',
-  height: '100%',
-  margin: 'auto',
-}
-
-const cardStyle = {
-  height: 'auto',
-  maxWidth: '20%',
-}
-
-const gameButtons = {
-  margin: 'auto',
-  width: '100%',
-  align: 'center',
-}
-
-const gameButton = {
-  textAlign: 'center',
-  height: '10%',
-  width: '50%'
-}
 
 var deck;
 var aiDeck;
@@ -74,12 +51,7 @@ const BlackjackGame = () => {
         </Box>
       <Box style={playerStyle}>
         Player
-        <CardsDisplay hand={playerHand}/>
-        <div style={gameButtons}>
-          <button onClick={hit()} style={gameButton}>HIT</button>
-          <button onClick={stay()} style={gameButton}>STAY</button>
-          <button onClick={restart()} style={gameButton}>PLAY AGAIN</button>
-        </div>
+        <CardsDisplay hand={playerHand} playerType="player"/>
         </Box>
       </Box>
       <Box style={aiSideStyle}>
@@ -113,7 +85,7 @@ function buildDeck() {
   deck = []
   for (var i = 0; i < 8; i++) {
     for (var j = 2; j < 12; j++) {
-      if (j == 10) {
+      if (j === 10) {
         deck.push(j)
         deck.push(j)
         deck.push(j)
@@ -156,14 +128,16 @@ function shuffle(array) {
   return array;
 }
 
-function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
-}
+// function getRandomIntInclusive(min, max) {
+//   min = Math.ceil(min);
+//   max = Math.floor(max);
+//   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+// }
 
 function hit() {
   console.log('hit')
+  playerHand.push(deck.pop())
+
 }
 
 function stay() {
