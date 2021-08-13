@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 import '../App.css';
 import { Box } from 'rebass'
 import CardsDisplay from './CardsDisplay.js'
@@ -52,37 +53,45 @@ var playerHand;
 var aiDealerHand;
 var aiHand;
 
-const BlackjackGame = () => {
-  startGame()
-  return (
-    <Box style={gameStyle}>
-      <Box style={playerSideStyle}>
-        <Box style={dealerStyle}>
-          Dealer
-          <CardsDisplay hand={dealerHand} playerType="dealer"/>
+class BlackjackGame extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      playerHand : []
+    }
+  }
+  render() {
+    startGame()
+    return (
+      <Box style={gameStyle}>
+        <Box style={playerSideStyle}>
+          <Box style={dealerStyle}>
+            Dealer
+            <CardsDisplay hand={dealerHand} playerType="dealer"/>
+          </Box>
+        <Box style={playerStyle}>
+          Player
+          <CardsDisplay hand={playerHand} playerType="player"/>
+          <div style={gameButtons}>
+            <button onClick={hit} style={gameButton}>HIT</button>
+            <button onClick={stay} style={gameButton}>STAY</button>
+            <button onClick={restart} style={gameButton}>PLAY AGAIN</button>
+          </div>
+          </Box>
         </Box>
-      <Box style={playerStyle}>
-        Player
-        <CardsDisplay hand={playerHand} playerType="player"/>
-        <div style={gameButtons}>
-          <button onClick={hit} style={gameButton}>HIT</button>
-          <button onClick={stay} style={gameButton}>STAY</button>
-          <button onClick={restart} style={gameButton}>PLAY AGAIN</button>
-        </div>
+        <Box style={aiSideStyle}>
+          <Box style={dealerStyle}>
+            AI Dealer
+            <CardsDisplay hand={aiDealerHand} playerType="dealer"/>
+          </Box>
+          <Box style={aiStyle}>
+            AI Player
+            <CardsDisplay hand={aiHand}/>
+          </Box>
         </Box>
       </Box>
-      <Box style={aiSideStyle}>
-        <Box style={dealerStyle}>
-          AI Dealer
-          <CardsDisplay hand={aiDealerHand} playerType="dealer"/>
-        </Box>
-        <Box style={aiStyle}>
-          AI Player
-          <CardsDisplay hand={aiHand}/>
-        </Box>
-      </Box>
-    </Box>
-)
+    )
+  }
 }
 
 function startGame() {
@@ -148,6 +157,7 @@ function shuffle(array) {
 function hit() {
  console.log("hit")
  playerHand.push(deck.pop())
+ this.setState({hand: this.state.playerHand})
 }
 
 function stay() {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 import { Box, Image } from'rebass'
 import twoOfSpades from '../images/2ofSpades.png'
 import threeOfSpades from '../images/3ofSpades.png'
@@ -47,8 +48,32 @@ const cardValues = {
   11: aceOfSpades
 }
 
-const CardsDisplay = ({hand, playerType}) => {
+class CardsDisplay extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hand: this.props.hand
+    }
+    this.setState = this.setState.bind(this);
+  }
+  render() {
+    console.log("rendering")
+    var cards = onChange(this.props.hand, this.props.playerType)
+    return (
+      <Box style={cardsDisplayStyle}>
+        {cards}
+      </Box>
+    );
+  }
+}
 
+function getCard(card, index) {
+  return (
+    <Image key={index.toString()} style={cardStyle} src={cardValues[card]}/>
+  );
+}
+
+function onChange(hand, playerType) {
   var cards = []
   for (var i=0; i<hand.length; i++) {
       var card = hand[i]
@@ -57,18 +82,7 @@ const CardsDisplay = ({hand, playerType}) => {
         i = hand.length
       }
   }
-  return (
-    <Box style={cardsDisplayStyle}>
-      {cards}
-      // {getButtons(playerType)}
-    </Box>
-  );
-}
-
-function getCard(card, index) {
-  return (
-    <Image key={index.toString()} style={cardStyle} src={cardValues[card]}/>
-  );
+  return cards;
 }
 
 function getButtons(playerType) {
