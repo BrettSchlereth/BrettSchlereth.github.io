@@ -52,16 +52,14 @@ class CardsDisplay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      hand: this.props.hand
+      hand: []
     }
-    this.setState = this.setState.bind(this);
   }
   render() {
     console.log("rendering")
-    var cards = onChange(this.props.hand, this.props.playerType)
     return (
       <Box style={cardsDisplayStyle}>
-        {cards}
+        {getCards(this.props.hand, this.props.playerType)}
       </Box>
     );
   }
@@ -73,7 +71,7 @@ function getCard(card, index) {
   );
 }
 
-function onChange(hand, playerType) {
+function getCards(hand, playerType) {
   var cards = []
   for (var i=0; i<hand.length; i++) {
       var card = hand[i]
@@ -88,13 +86,26 @@ function onChange(hand, playerType) {
 function getButtons(playerType) {
   // if (playerType === "player") {
   //   return (
-  //     // <div style={gameButtons}>
-  //     //   <button onClick={hit} style={gameButton}>HIT</button>
-  //     //   <button onClick={stay} style={gameButton}>STAY</button>
-  //     //   <button onClick={restart} style={gameButton}>PLAY AGAIN</button>
-  //     // </div>
+  //     <div style={gameButtons}>
+  //       <button onClick={hit} style={gameButton}>HIT</button>
+  //       <button onClick={stay} style={gameButton}>STAY</button>
+  //       <button onClick={restart} style={gameButton}>PLAY AGAIN</button>
+  //     </div>
   //   );
   // }
 }
+
+// function hit() {
+//  console.log("hit")
+//  hand.push(deck.pop())
+// }
+//
+// function stay() {
+//
+// }
+//
+// function restart() {
+//
+// }
 
 export default CardsDisplay;
