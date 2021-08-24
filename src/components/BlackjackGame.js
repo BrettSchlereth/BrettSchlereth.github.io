@@ -13,6 +13,8 @@ import eightOfSpades from '../images/8ofSpades.png'
 import nineOfSpades from '../images/9ofSpades.png'
 import tenOfSpades from '../images/10ofSpades.png'
 import aceOfSpades from '../images/aceOfSpades.png'
+import * as tf from '@tensorflow/tfjs'
+import brettJackModel from '../BrettJackModel.json'
 
 const cardStyle = {
   height: 'auto',
@@ -50,7 +52,15 @@ class Hand {
 
   getTotalCardValue() {
     var total = 0
+    var handCount = 0
     this.cards.forEach(card => {
+      if (card <= 6) {
+        handCount += 1
+      }
+      else if (card >= 10) {
+        handCount -= 1
+      }
+      this.count = handCount
       if (card == 11 && total + card > 21) {
         card = 1
       }
@@ -122,9 +132,12 @@ var playerHand = new Hand("player");
 var aiDealerHand = new Hand("dealer");
 var aiPlayerHand = new Hand("player");
 
+
+
 class BlackjackGame extends React.Component {
   constructor(props) {
     super(props);
+    this.loadTheModel()
     this.startGame();
     this.state = {
       playerHand : [],
@@ -138,6 +151,14 @@ class BlackjackGame extends React.Component {
       message: "hit or stay",
       aiMessage: "",
     }
+  }
+
+  loadTheModel() {
+    useEffect(() => {
+      tf.ready().then(() => {
+        loadModel();
+      });
+    }, []);
   }
 
   checkForBlackjack(dealer, player) {
@@ -217,12 +238,11 @@ class BlackjackGame extends React.Component {
          restartDisabled: false,
          playerDone: true,
          dealerDone: true,
-         message: "Player busted!"
+         message: "Player busted! Dealer Wins!"
        })
        }
        break;
      case "dealer":
-        console.log("dealer hit")
         this.setState({
           dealerHand: dealerHand.addCard(deck)
         })
@@ -343,8 +363,6 @@ function buildDeck() {
   console.log("building deck")
 }
 
-
-
 function dealCards() {
   playerHand.cards = [];
   dealerHand.cards = [];
@@ -365,12 +383,6 @@ function getCard(card, index) {
   );
 }
 
-
-
-function restart() {
-
-}
-
 function shuffle(array) {
   var currentIndex = array.length,  randomIndex;
 
@@ -388,18 +400,5 @@ function shuffle(array) {
 
   return array;
 }
-
-
-
-
-
-
-
-// function getRandomIntInclusive(min, max) {
-//   min = Math.ceil(min);
-//   max = Math.floor(max);
-//   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
-// }
-
 
 export default BlackjackGame;
