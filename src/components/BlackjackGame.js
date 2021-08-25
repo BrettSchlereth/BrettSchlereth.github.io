@@ -14,7 +14,7 @@ import nineOfSpades from '../images/9ofSpades.png'
 import tenOfSpades from '../images/10ofSpades.png'
 import aceOfSpades from '../images/aceOfSpades.png'
 import * as tf from '@tensorflow/tfjs'
-import brettJackModel from '../BrettJackModel.json'
+import modelLocation from '../BrettJackModel.json'
 
 const cardStyle = {
   height: 'auto',
@@ -133,7 +133,6 @@ var aiDealerHand = new Hand("dealer");
 var aiPlayerHand = new Hand("player");
 
 
-
 class BlackjackGame extends React.Component {
   constructor(props) {
     super(props);
@@ -151,14 +150,7 @@ class BlackjackGame extends React.Component {
       message: "hit or stay",
       aiMessage: "",
     }
-  }
 
-  loadTheModel() {
-    useEffect(() => {
-      tf.ready().then(() => {
-        loadModel();
-      });
-    }, []);
   }
 
   checkForBlackjack(dealer, player) {
@@ -264,6 +256,19 @@ class BlackjackGame extends React.Component {
      case "aiDealer":
         break;
       }
+  }
+
+  async loadTheModel () {
+    try {
+      var location = process.env.PUBLIC_URL + modelLocation
+      var model = await tf.loadLayersModel(location);
+      model.summary();
+      console.log("model: ", model)
+    }
+    catch (err) {
+      console.log(err);
+      console.log("failed load model");
+    }
   }
 
   startGame() {
@@ -382,6 +387,8 @@ function getCard(card, index) {
     <Image key={index.toString()} style={cardStyle} src={cardValues[card]}/>
   );
 }
+
+
 
 function shuffle(array) {
   var currentIndex = array.length,  randomIndex;
