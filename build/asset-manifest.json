@@ -1,26 +1,35 @@
 {
   "files": {
     "main.css": "/static/css/main.1e17df9c.chunk.css",
-    "main.js": "/static/js/main.ce9b4fec.chunk.js",
-    "main.js.map": "/static/js/main.ce9b4fec.chunk.js.map",
+    "main.js": "/static/js/main.34c47320.chunk.js",
+    "main.js.map": "/static/js/main.34c47320.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.bbbe84dd.js",
     "runtime-main.js.map": "/static/js/runtime-main.bbbe84dd.js.map",
-    "static/js/2.4be4adb5.chunk.js": "/static/js/2.4be4adb5.chunk.js",
-    "static/js/2.4be4adb5.chunk.js.map": "/static/js/2.4be4adb5.chunk.js.map",
+    "static/js/2.564cc3b7.chunk.js": "/static/js/2.564cc3b7.chunk.js",
+    "static/js/2.564cc3b7.chunk.js.map": "/static/js/2.564cc3b7.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.beaedf28df1a9847e12c0139a40be92d.js": "/precache-manifest.beaedf28df1a9847e12c0139a40be92d.js",
+    "precache-manifest.27b5f0c0fe392ac1d1c9aef300d81a04.js": "/precache-manifest.27b5f0c0fe392ac1d1c9aef300d81a04.js",
     "service-worker.js": "/service-worker.js",
     "static/css/main.1e17df9c.chunk.css.map": "/static/css/main.1e17df9c.chunk.css.map",
-    "static/js/2.4be4adb5.chunk.js.LICENSE.txt": "/static/js/2.4be4adb5.chunk.js.LICENSE.txt",
+    "static/js/2.564cc3b7.chunk.js.LICENSE.txt": "/static/js/2.564cc3b7.chunk.js.LICENSE.txt",
+    "static/media/10ofSpades.png": "/static/media/10ofSpades.567c4b33.png",
+    "static/media/1920x620BunkerDown.png": "/static/media/1920x620BunkerDown.1e17e2ed.png",
+    "static/media/4ofSpades.png": "/static/media/4ofSpades.d1039f10.png",
+    "static/media/5ofSpades.png": "/static/media/5ofSpades.4a890ff4.png",
     "static/media/600x900BunkerDown.png": "/static/media/600x900BunkerDown.2bb3954a.png",
+    "static/media/6ofSpades.png": "/static/media/6ofSpades.465b083d.png",
+    "static/media/7ofSpades.png": "/static/media/7ofSpades.397642b3.png",
+    "static/media/8ofSpades.png": "/static/media/8ofSpades.a855651a.png",
+    "static/media/9ofSpades.png": "/static/media/9ofSpades.1476e4c1.png",
     "static/media/BlackjackImage.png": "/static/media/BlackjackImage.6c27dff6.png",
     "static/media/D20Image.png": "/static/media/D20Image.87e620db.png",
-    "static/media/ResumeImage.png": "/static/media/ResumeImage.859be2d8.png"
+    "static/media/ResumeImage.png": "/static/media/ResumeImage.859be2d8.png",
+    "static/media/aceOfSpades.png": "/static/media/aceOfSpades.001171ec.png"
   },
   "entrypoints": [
     "static/js/runtime-main.bbbe84dd.js",
-    "static/js/2.4be4adb5.chunk.js",
+    "static/js/2.564cc3b7.chunk.js",
     "static/css/main.1e17df9c.chunk.css",
-    "static/js/main.ce9b4fec.chunk.js"
+    "static/js/main.34c47320.chunk.js"
   ]
 }

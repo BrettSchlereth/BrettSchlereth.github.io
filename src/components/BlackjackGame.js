@@ -1,8 +1,7 @@
 import React from 'react';
-import { useState, setState } from 'react';
+//import { setState } from 'react'
 import '../App.css';
 import { Box, Image } from 'rebass'
-import CardsDisplay from './CardsDisplay.js'
 import twoOfSpades from '../images/2ofSpades.png'
 import threeOfSpades from '../images/3ofSpades.png'
 import fourOfSpades from '../images/4ofSpades.png'
@@ -14,7 +13,6 @@ import nineOfSpades from '../images/9ofSpades.png'
 import tenOfSpades from '../images/10ofSpades.png'
 import aceOfSpades from '../images/aceOfSpades.png'
 import * as tf from '@tensorflow/tfjs'
-import modelLocation from '../BrettJackModel.json'
 
 const cardStyle = {
   height: 'auto',
@@ -61,13 +59,13 @@ class Hand {
         handCount -= 1
       }
       this.count = handCount
-      if (card == 11 && total + card > 21) {
+      if (card === 11 && total + card > 21) {
         card = 1
       }
-      else if (card == 11 && this.soft == 0) {
+      else if (card === 11 && this.soft === 0) {
         this.soft = 1
       }
-      else if (total + card > 21 && this.soft == 1) {
+      else if (total + card > 21 && this.soft === 1) {
         total -= 10
         this.soft = 0
       }
@@ -154,19 +152,19 @@ class BlackjackGame extends React.Component {
   }
 
   checkForBlackjack(dealer, player) {
-    if (dealer.total == 21 && player.total == 21) {
+    if (dealer.total === 21 && player.total === 21) {
       this.setState({
         message: "Push!",
       });
       return true;
     }
-    else if (dealer.total == 21) {
+    else if (dealer.total === 21) {
       this.setState({
         message: "Dealer has blackjack!"
       })
       return true
     }
-    else if (player.total == 21) {
+    else if (player.total === 21) {
       this.setState({
         message: "Player has blackjack!"
       })
@@ -180,7 +178,7 @@ class BlackjackGame extends React.Component {
     for (var i=0; i<hand.cards.length; i++) {
         var card = hand.cards[i]
         cards.push(getCard(card, i))
-        if (playerType === "dealer" & this.state.playerDone == false) {
+        if (playerType === "dealer" & this.state.playerDone === false) {
           i = hand.cards.length
         }
     }
@@ -255,15 +253,17 @@ class BlackjackGame extends React.Component {
         break;
      case "aiDealer":
         break;
+     default:
+        console.log("Error: Player type not recognized")
+        break;
       }
+
   }
 
   async loadTheModel () {
     try {
-      var location = process.env.PUBLIC_URL + modelLocation
-      var model = await tf.loadLayersModel(location);
+      const model = await tf.loadLayersModel('model.json');
       model.summary();
-      console.log("model: ", model)
     }
     catch (err) {
       console.log(err);
@@ -284,7 +284,7 @@ class BlackjackGame extends React.Component {
     })
     buildDeck()
     dealCards()
-    if (this.checkForBlackjack(dealerHand, playerHand) == true) {
+    if (this.checkForBlackjack(dealerHand, playerHand) === true) {
       this.setState({
         hitDisabled: true,
         stayDisabled: true,

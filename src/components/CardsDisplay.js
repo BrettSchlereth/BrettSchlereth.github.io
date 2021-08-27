@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState } from 'react';
 import { Box, Image } from'rebass'
 import twoOfSpades from '../images/2ofSpades.png'
 import threeOfSpades from '../images/3ofSpades.png'
@@ -21,18 +20,6 @@ const cardsDisplayStyle = {
 const cardStyle = {
   height: 'auto',
   maxWidth: '20%',
-}
-
-const gameButtons = {
-  margin: 'auto',
-  width: '100%',
-  align: 'center',
-}
-
-const gameButton = {
-  textAlign: 'center',
-  height: '10%',
-  width: '50%'
 }
 
 const cardValues = {
@@ -81,18 +68,6 @@ function getCards(hand, playerType) {
       }
   }
   return cards;
-}
-
-function getButtons(playerType) {
-  // if (playerType === "player") {
-  //   return (
-  //     <div style={gameButtons}>
-  //       <button onClick={hit} style={gameButton}>HIT</button>
-  //       <button onClick={stay} style={gameButton}>STAY</button>
-  //       <button onClick={restart} style={gameButton}>PLAY AGAIN</button>
-  //     </div>
-  //   );
-  // }
 }
 
 // function hit() {
