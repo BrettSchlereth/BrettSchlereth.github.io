@@ -39,7 +39,7 @@ class Hand {
     this.soft = 0;
     this.blackjack = false;
     this.count = 0;
-    this.total = 0;
+    this.total = this.getTotalCardValue();
     this.busted = false;
   }
 
@@ -129,12 +129,12 @@ var dealerHand = new Hand("dealer");
 var playerHand = new Hand("player");
 var aiDealerHand = new Hand("dealer");
 var aiPlayerHand = new Hand("player");
-
+var model
 
 class BlackjackGame extends React.Component {
   constructor(props) {
     super(props);
-    this.loadTheModel()
+    model = this.loadTheModel()
     this.startGame();
     this.state = {
       playerHand : [],
@@ -145,6 +145,7 @@ class BlackjackGame extends React.Component {
       restartDisabled: true,
       playerDone: false,
       dealerDone: false,
+      aiPlayerDone: false,
       message: "hit or stay",
       aiMessage: "",
     }
@@ -173,6 +174,24 @@ class BlackjackGame extends React.Component {
     else return false
     }
 
+  getAiMoves() {
+    while (aiPlayerHand.busted === false) {
+      console.log("model",model)
+      try {
+        var predictions = this.getPrediction()
+      if (predictions[0] >= predictions[1] && predictions[0] > 0.5) {
+        this.hit("aiPlayer")
+      }
+      else {
+        break
+      }
+    }
+    catch {
+      console.log("error getting model prediction")
+    }
+  }
+}
+
   getCards(hand, playerType) {
     var cards = []
     for (var i=0; i<hand.cards.length; i++) {
@@ -185,15 +204,31 @@ class BlackjackGame extends React.Component {
     return cards;
   }
 
+  getCount(hand1, hand2) {
+    return hand1.count + hand2.count
+  }
+
   getDealerMoves() {
     console.log("starting dealer moves")
     while (dealerHand.total < 17) {
       this.hit("dealer")
     }
     this.getWinner(dealerHand, playerHand)
+    this.getAiMoves()
     this.setState({
       restartDisabled: false
     })
+  }
+
+  async getPrediction() {
+    try {
+      var hitPrediction = await model.predict(tf.tensor([[aiDealerHand.total, aiPlayerHand.total, this.getCount(aiDealerHand, aiPlayerHand), aiPlayerHand.soft, 1]])).dataSync()[0]
+      var stayPrediction = await model.predict(tf.tensor([[aiDealerHand.total, aiPlayerHand.total, this.getCount(aiDealerHand, aiPlayerHand), aiPlayerHand.soft, 0]])).dataSync()[0]
+      return [hitPrediction, stayPrediction]
+    }
+    catch {
+      console.log("error getting prediction")
+    }
   }
 
   getWinner(dealer, player) {
@@ -250,6 +285,15 @@ class BlackjackGame extends React.Component {
         }
         break;
      case "aiPlayer":
+        this.setState({
+          aiPlayerHand: aiPlayerHand.addCard(aiDeck)
+        })
+        if (aiPlayerHand.busted) {
+          this.setState({
+            aiPlayerDone: true,
+            message: "AI Busted! AI Dealer Wins!"
+          })
+        }
         break;
      case "aiDealer":
         break;
@@ -261,14 +305,17 @@ class BlackjackGame extends React.Component {
   }
 
   async loadTheModel () {
+    var model
     try {
-      const model = await tf.loadLayersModel('model.json');
-      model.summary();
+      return model = await tf.loadLayersModel('model.json');
+
     }
     catch (err) {
       console.log(err);
       console.log("failed load model");
     }
+
+
   }
 
   startGame() {
@@ -303,13 +350,20 @@ class BlackjackGame extends React.Component {
     console.log('start')
   }
 
-  stay() {
-    this.setState({
-      hitDisabled: true,
-      stayDisabled: true,
-      playerDone: true,
-    })
-    this.getDealerMoves()
+  stay(hand) {
+    switch (hand.owner) {
+      case "player":
+        this.setState({
+          hitDisabled: true,
+          stayDisabled: true,
+          playerDone: true,
+        })
+        this.getDealerMoves()
+      case "aiPlayer":
+        console.log("aiPlayer stayed")
+      default:
+        console.log("unknown player stayed")
+    }
   }
 
   render() {
@@ -328,7 +382,7 @@ class BlackjackGame extends React.Component {
           {this.getCards(playerHand, "player")}
           <div style={gameButtons}>
             <button disabled={this.state.hitDisabled} onClick={() => this.hit("player")} style={gameButton}>HIT</button>
-            <button disabled={this.state.stayDisabled} onClick={() => this.stay()} style={gameButton}>STAY</button>
+            <button disabled={this.state.stayDisabled} onClick={() => this.stay(playerHand)} style={gameButton}>STAY</button>
             <button disabled={this.state.restartDisabled} onClick={() => this.startGame()} style={gameButton}>PLAY AGAIN</button>
           </div>
           </Box>
