@@ -70,15 +70,18 @@ class Hand {
         this.soft = 0
       }
       total += card
+      this.total = total
     });
 
     this.total = total
     if (total > 21) {
+      console.log(this.owner, "busted!")
       this.busted = true;
     }
     else {
       this.busted = false;
     }
+    return total;
   }
 }
 
@@ -127,7 +130,7 @@ var deck;
 var aiDeck;
 var dealerHand = new Hand("dealer");
 var playerHand = new Hand("player");
-var aiDealerHand = new Hand("dealer");
+var aiDealerHand = new Hand("aiDealer");
 var aiPlayerHand = new Hand("player");
 var model
 
@@ -135,11 +138,17 @@ class BlackjackGame extends React.Component {
   constructor(props) {
     super(props);
     model = this.loadTheModel()
+    .then(function(result) {
+      return result
+    })
+    .catch(console.log("failure"))
+    console.log("model: ", model)
     this.startGame();
     this.state = {
       playerHand : [],
       dealerHand: [],
       aiHand: [],
+      aiDealerHand: [],
       hitDisabled: false,
       stayDisabled: false,
       restartDisabled: true,
@@ -174,23 +183,34 @@ class BlackjackGame extends React.Component {
     else return false
     }
 
-  getAiMoves() {
+  async getAiDealerMoves() {
+    console.log("starting dealer moves")
+    console.log("dealer total", aiDealerHand.getTotalCardValue())
+    while (aiDealerHand.getTotalCardValue() < 17) {
+        console.log("aiDealer is hitting")
+        this.hit("aiDealer")
+    }
+    this.getWinner(aiDealerHand, aiPlayerHand)
+    }
+
+  async getAiMoves() {
     while (aiPlayerHand.busted === false) {
-      console.log("model",model)
-      try {
-        var predictions = this.getPrediction()
+      var predictions = await this.getPrediction()
+      console.log("predictions: ", predictions)
       if (predictions[0] >= predictions[1] && predictions[0] > 0.5) {
+        console.log("ai is hitting")
         this.hit("aiPlayer")
       }
       else {
+        console.log("ai is holding")
         break
       }
     }
-    catch {
-      console.log("error getting model prediction")
+    if (aiPlayerHand.total > 21) {
+      console.log("AI player busted!")
     }
+    this.getAiDealerMoves(aiDealerHand, aiPlayerHand)
   }
-}
 
   getCards(hand, playerType) {
     var cards = []
@@ -208,12 +228,16 @@ class BlackjackGame extends React.Component {
     return hand1.count + hand2.count
   }
 
-  getDealerMoves() {
-    console.log("starting dealer moves")
-    while (dealerHand.total < 17) {
-      this.hit("dealer")
+  getDealerMoves(dealer, player) {
+    while (dealer.getTotalCardValue() < 17) {
+      if (dealer.owner === "dealer") {
+        this.hit("dealer")
+      }
+      else {
+        this.hit("aiDealer")
+      }
     }
-    this.getWinner(dealerHand, playerHand)
+    this.getWinner(dealer, player)
     this.getAiMoves()
     this.setState({
       restartDisabled: false
@@ -221,20 +245,21 @@ class BlackjackGame extends React.Component {
   }
 
   async getPrediction() {
-    try {
-      var hitPrediction = await model.predict(tf.tensor([[aiDealerHand.total, aiPlayerHand.total, this.getCount(aiDealerHand, aiPlayerHand), aiPlayerHand.soft, 1]])).dataSync()[0]
-      var stayPrediction = await model.predict(tf.tensor([[aiDealerHand.total, aiPlayerHand.total, this.getCount(aiDealerHand, aiPlayerHand), aiPlayerHand.soft, 0]])).dataSync()[0]
-      return [hitPrediction, stayPrediction]
+    model = await tf.loadLayersModel('model.json');
+    var hitPredictionInput = tf.tensor([[aiDealerHand.cards[0], aiPlayerHand.getTotalCardValue(), this.getCount(aiDealerHand, aiPlayerHand), aiPlayerHand.soft, 1]])
+    var stayPredictionInput = tf.tensor([[aiDealerHand.cards[0], aiPlayerHand.getTotalCardValue(), this.getCount(aiDealerHand, aiPlayerHand), aiPlayerHand.soft, 0]])
+    var hitPrediction = model.predict(hitPredictionInput).dataSync()[0]
+    var stayPrediction = model.predict(stayPredictionInput).dataSync()[0]
+    console.log("hit: ", hitPrediction, " stay: ", stayPrediction)
+    return [hitPrediction, stayPrediction]
     }
-    catch {
-      console.log("error getting prediction")
-    }
-  }
 
   getWinner(dealer, player) {
     var winnerMessage = ""
-    console.log("dealerTotal:", dealer.total)
-    if (dealer.busted) {
+    if (player.total > 21) {
+      winnerMessage = "Player Busted! Dealer Wins!"
+    }
+    else if (dealer.busted) {
       winnerMessage = "Dealer Busted! Player Wins!"
     }
     else if (dealer.total > player.total) {
@@ -244,9 +269,16 @@ class BlackjackGame extends React.Component {
       winnerMessage = "Player Wins!"
     }
     else {winnerMessage = "Push!"}
-    this.setState({
-      message: winnerMessage
-    })
+    if (dealer.owner === "dealer") {
+      this.setState({
+        message: winnerMessage
+      })
+    }
+    else {
+      this.setState({
+        aiMessage: winnerMessage
+      })
+    }
   }
 
   hit(handOwner) {
@@ -265,6 +297,7 @@ class BlackjackGame extends React.Component {
          dealerDone: true,
          message: "Player busted! Dealer Wins!"
        })
+       this.getDealerMoves(dealerHand, playerHand)
        }
        break;
      case "dealer":
@@ -291,31 +324,43 @@ class BlackjackGame extends React.Component {
         if (aiPlayerHand.busted) {
           this.setState({
             aiPlayerDone: true,
-            message: "AI Busted! AI Dealer Wins!"
+            aiMessage: "AI Busted! AI Dealer Wins!"
           })
         }
         break;
      case "aiDealer":
+       this.setState({
+         aiDealerHand: aiDealerHand.addCard(aiDeck)
+       })
+       if (aiDealerHand.busted) {
+         this.setState({
+           dealerDone: true,
+           aiMessage: "Dealer Busted! Player Wins!"
+         })
+       }
+       else if (aiDealerHand.total >= 17 && aiDealerHand.total <= 21) {
+         this.setState({
+           dealerDone: true,
+           restartDisabled: false,
+         })
+       }
         break;
      default:
         console.log("Error: Player type not recognized")
         break;
       }
-
   }
 
   async loadTheModel () {
     var model
     try {
-      return model = await tf.loadLayersModel('model.json');
-
+      model = await tf.loadLayersModel('model.json');
+      return model
     }
     catch (err) {
       console.log(err);
       console.log("failed load model");
     }
-
-
   }
 
   startGame() {
@@ -328,6 +373,7 @@ class BlackjackGame extends React.Component {
       stayDisabled: false,
       restartDisabled: true,
       message: "hit or stay",
+      aiMessage: "AI Side"
     })
     buildDeck()
     dealCards()
@@ -338,15 +384,6 @@ class BlackjackGame extends React.Component {
         restartDisabled: false
       })
     }
-    else {
-      //get player moves until stay or bust
-      //get dealer moves
-      //let the ai play
-      //let the ai's dealer play
-      //add scores
-      //clear on restart
-    }
-
     console.log('start')
   }
 
@@ -358,7 +395,7 @@ class BlackjackGame extends React.Component {
           stayDisabled: true,
           playerDone: true,
         })
-        this.getDealerMoves()
+        this.getDealerMoves(dealerHand, playerHand)
       case "aiPlayer":
         console.log("aiPlayer stayed")
       default:
@@ -418,7 +455,7 @@ function buildDeck() {
     }
   }
   shuffle(deck)
-  aiDeck = deck
+  aiDeck = deck.slice()
   console.log("building deck")
 }
 
@@ -430,9 +467,11 @@ function dealCards() {
   for (var i = 0; i < 2; i++) {
     playerHand.addCard(deck)
     dealerHand.addCard(deck)
+    aiPlayerHand.addCard(aiDeck)
+    aiDealerHand.addCard(aiDeck)
   }
-  aiPlayerHand.cards = playerHand.cards.slice()
-  aiDealerHand.cards = dealerHand.cards.slice()
+  aiPlayerHand.getTotalCardValue()
+  aiDealerHand.getTotalCardValue()
   console.log("dealing cards")
 }
 
@@ -441,8 +480,6 @@ function getCard(card, index) {
     <Image key={index.toString()} style={cardStyle} src={cardValues[card]}/>
   );
 }
-
-
 
 function shuffle(array) {
   var currentIndex = array.length,  randomIndex;
