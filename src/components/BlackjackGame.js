@@ -33,8 +33,9 @@ const cardValues = {
 }
 
 class Hand {
-  constructor(handOwner) {
+  constructor(handOwner, ai = false) {
     this.owner = handOwner;
+    this.isAi = ai;
     this.cards = [];
     this.soft = 0;
     this.blackjack = false;
@@ -86,9 +87,14 @@ class Hand {
 }
 
 const gameStyle = {
-  background: 'brown',
+  background: 'green',
   align: 'center',
   display: 'flex'
+}
+
+const messageStyle = {
+  background: 'DarkGreen',
+  textAlign: 'center',
 }
 
 const playerSideStyle = {
@@ -103,7 +109,7 @@ const aiSideStyle = {
 const dealerStyle = {
   height: 'auto',
   maxHeight: '25em',
-  background: 'blue',
+
 }
 
 const playerStyle = {
@@ -111,7 +117,7 @@ const playerStyle = {
 }
 
 const aiStyle = {
-  background: 'gray',
+  background: 'green',
 }
 
 const gameButtons = {
@@ -123,7 +129,17 @@ const gameButtons = {
 const gameButton = {
   textAlign: 'center',
   height: '10%',
-  width: '50%'
+  width: '50%',
+  backgroundColor: "white",
+  border: "3px",
+  color: "black",
+  fontSize: "1.5em",
+  borderRadius: '5px',
+  border: '1px solid black',
+}
+
+const scoreStyle = {
+  textAlign: 'center'
 }
 
 var deck;
@@ -131,8 +147,19 @@ var aiDeck;
 var dealerHand = new Hand("dealer");
 var playerHand = new Hand("player");
 var aiDealerHand = new Hand("aiDealer");
-var aiPlayerHand = new Hand("player");
+var aiPlayerHand = new Hand("player", true);
 var model
+var playerStats = {
+  "win": 0,
+  "push": 0,
+  "loss": 0
+}
+var aiStats = {
+  "win": 0,
+  "push": 0,
+  "loss": 0
+}
+var totalGames = 0
 
 class BlackjackGame extends React.Component {
   constructor(props) {
@@ -157,8 +184,13 @@ class BlackjackGame extends React.Component {
       aiPlayerDone: false,
       message: "hit or stay",
       aiMessage: "",
+      playerWinPercentage: 0,
+      playerPushPercentage: 0,
+      playerLossPercentage: 0,
+      aiWinPercentage: 0,
+      aiPushPercentage: 0,
+      aiLossPercentage: 0,
     }
-
   }
 
   checkForBlackjack(dealer, player) {
@@ -166,18 +198,23 @@ class BlackjackGame extends React.Component {
       this.setState({
         message: "Push!",
       });
+      this.setStats("push", player.isAi)
       return true;
     }
     else if (dealer.total === 21) {
       this.setState({
         message: "Dealer has blackjack!"
       })
+      this.setStats("loss", true)
+      this.setStats("loss", false)
       return true
     }
     else if (player.total === 21) {
       this.setState({
         message: "Player has blackjack!"
       })
+      this.setStats("win", true)
+      this.setStats("win", false)
       return true
     }
     else return false
@@ -205,9 +242,6 @@ class BlackjackGame extends React.Component {
         console.log("ai is holding")
         break
       }
-    }
-    if (aiPlayerHand.total > 21) {
-      console.log("AI player busted!")
     }
     this.getAiDealerMoves(aiDealerHand, aiPlayerHand)
   }
@@ -244,6 +278,13 @@ class BlackjackGame extends React.Component {
     })
   }
 
+  getPercentage(playerType = "human", endType) {
+    if (playerType === "ai") {
+      return Math.floor(100 * (aiStats[endType] / (totalGames + 1)))
+    }
+    return Math.floor(100 * (playerStats[endType] / (totalGames + 1)))
+  }
+
   async getPrediction() {
     model = await tf.loadLayersModel('model.json');
     var hitPredictionInput = tf.tensor([[aiDealerHand.cards[0], aiPlayerHand.getTotalCardValue(), this.getCount(aiDealerHand, aiPlayerHand), aiPlayerHand.soft, 1]])
@@ -258,17 +299,24 @@ class BlackjackGame extends React.Component {
     var winnerMessage = ""
     if (player.total > 21) {
       winnerMessage = "Player Busted! Dealer Wins!"
+      this.setStats("loss", player.isAi)
     }
     else if (dealer.busted) {
       winnerMessage = "Dealer Busted! Player Wins!"
+      this.setStats("win", player.isAi)
     }
     else if (dealer.total > player.total) {
       winnerMessage = "Dealer Wins!"
+      this.setStats("loss", player.isAi)
     }
     else if (player.total > dealer.total) {
       winnerMessage = "Player Wins!"
+      this.setStats("win", player.isAi)
     }
-    else {winnerMessage = "Push!"}
+    else {
+      winnerMessage = "Push!"
+      this.setStats("push", player.isAi)
+      }
     if (dealer.owner === "dealer") {
       this.setState({
         message: winnerMessage
@@ -363,7 +411,27 @@ class BlackjackGame extends React.Component {
     }
   }
 
+  setStats(endType, isAi) {
+    if (isAi === true) {
+      aiStats[endType] += 1;
+    }
+    else {
+      playerStats[endType] += 1
+    }
+    this.setState({
+      playerWinPercentage: this.getPercentage("human", "win"),
+      playerPushPercentage: this.getPercentage("human", "push"),
+      aiWinPercentage: this.getPercentage("ai", "win"),
+      aiPushPercentage: this.getPercentage("ai", "push"),
+      playerLossPercentage: 100 - this.getPercentage("human", "win") - this.getPercentage("human", "push"),
+      aiLossPercentage: 100 - this.getPercentage("ai", "win") - this.getPercentage("ai", "push")
+    })
+    console.log("playerStats: ", playerStats, " totalGames: ", totalGames)
+    console.log("aiStats: ", aiStats, " totalGames: ", totalGames)
+  }
+
   startGame() {
+    totalGames += 1
     this.setState({
       playerHand: [],
       dealerHand: [],
@@ -405,17 +473,34 @@ class BlackjackGame extends React.Component {
 
   render() {
     return (
+      <div>
+      <Box style={scoreStyle}>
+      Total Games: {totalGames}
+      </Box>
+      <Box style={scoreStyle}>
+        Player Wins: {this.state.playerWinPercentage}% AI Wins: {this.state.aiWinPercentage}%
+      </Box>
+      <Box style={scoreStyle}>
+        Player Pushes: {this.state.playerPushPercentage}% AI Pushes: {this.state.aiPushPercentage}%
+      </Box>
+      <Box style={scoreStyle}>
+        Player Losses: {this.state.playerLossPercentage}% AI Loss: {this.state.aiLossPercentage}%
+      </Box>
       <Box style={gameStyle}>
         <Box style={playerSideStyle}>
-          <Box>
+          <Box style={messageStyle}>
             {this.state.message}
           </Box>
-          <Box style={dealerStyle}>
+          <Box>
             Dealer
+          </Box>
+          <Box style={dealerStyle}>
             {this.getCards(dealerHand, "dealer")}
           </Box>
+          <Box>
+            Player
+          </Box>
         <Box style={playerStyle}>
-          Player
           {this.getCards(playerHand, "player")}
           <div style={gameButtons}>
             <button disabled={this.state.hitDisabled} onClick={() => this.hit("player")} style={gameButton}>HIT</button>
@@ -425,19 +510,24 @@ class BlackjackGame extends React.Component {
           </Box>
         </Box>
         <Box style={aiSideStyle}>
-          <Box>
+          <Box style={messageStyle}>
             {this.state.aiMessage}
           </Box>
-          <Box style={dealerStyle}>
+          <Box>
             AI Dealer
+          </Box>
+          <Box style={dealerStyle}>
             {this.getCards(aiDealerHand, "dealer")}
           </Box>
-          <Box style={aiStyle}>
+          <Box>
             AI Player
+          </Box>
+          <Box style={aiStyle}>
             {this.getCards(aiPlayerHand, "aiPlayer")}
           </Box>
         </Box>
       </Box>
+      </div>
     )
   }
 }
