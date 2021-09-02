@@ -89,16 +89,20 @@ class Hand {
 const gameStyle = {
   background: 'green',
   align: 'center',
-  display: 'flex'
+  display: 'flex',
+  borderRadius: '5px',
+  border: '1px solid black'
 }
 
 const messageStyle = {
   background: 'DarkGreen',
   textAlign: 'center',
+  borderRadius: '20px, 20px, 20px, 20px'
 }
 
 const playerSideStyle = {
   width: '50%',
+  borderRadius: '5px'
 }
 
 const aiSideStyle = {
@@ -109,11 +113,12 @@ const aiSideStyle = {
 const dealerStyle = {
   height: 'auto',
   maxHeight: '25em',
-
+  borderRadius: '5px'
 }
 
 const playerStyle = {
   background: 'green',
+  borderRadius: '5px'
 }
 
 const aiStyle = {
@@ -126,17 +131,28 @@ const gameButtons = {
   align: 'center',
 }
 
-const gameButton = {
-  textAlign: 'center',
-  height: '10%',
-  width: '50%',
-  backgroundColor: "white",
-  border: "3px",
-  color: "black",
-  fontSize: "1.5em",
-  borderRadius: '5px',
-  border: '1px solid black',
-}
+const gameButtonStyles = {
+  false: {
+    textAlign: 'center',
+    height: '10%',
+    width: '50%',
+    backgroundColor: "white",
+    color: "black",
+    fontSize: "1.5em",
+    borderRadius: '5px',
+    border: '1px solid black'
+  },
+  true: {
+    textAlign: 'center',
+    height: '10%',
+    width: '50%',
+    backgroundColor: "gray",
+    color: "black",
+    fontSize: "1.5em",
+    borderRadius: '5px',
+    border: '1px solid black'
+  }
+};
 
 const scoreStyle = {
   textAlign: 'center'
@@ -182,8 +198,8 @@ class BlackjackGame extends React.Component {
       playerDone: false,
       dealerDone: false,
       aiPlayerDone: false,
-      message: "hit or stay",
-      aiMessage: "",
+      message: "Hit Or Stay",
+      aiMessage: "AI Is Waiting",
       playerWinPercentage: 0,
       playerPushPercentage: 0,
       playerLossPercentage: 0,
@@ -218,7 +234,17 @@ class BlackjackGame extends React.Component {
       return true
     }
     else return false
+  }
+
+  displayDealerTotal(dealerType = "human") {
+    if (dealerHand.cards.length === 2) {
+      return dealerHand.cards[0]
     }
+    if (dealerType === "ai") {
+      return aiDealerHand.getTotalCardValue()
+    }
+    return dealerHand.getTotalCardValue()
+  }
 
   async getAiDealerMoves() {
     console.log("starting dealer moves")
@@ -492,20 +518,20 @@ class BlackjackGame extends React.Component {
             {this.state.message}
           </Box>
           <Box>
-            Dealer
+            Dealer: {this.displayDealerTotal()}
           </Box>
           <Box style={dealerStyle}>
             {this.getCards(dealerHand, "dealer")}
           </Box>
           <Box>
-            Player
+            Player: {playerHand.getTotalCardValue()}
           </Box>
         <Box style={playerStyle}>
           {this.getCards(playerHand, "player")}
           <div style={gameButtons}>
-            <button disabled={this.state.hitDisabled} onClick={() => this.hit("player")} style={gameButton}>HIT</button>
-            <button disabled={this.state.stayDisabled} onClick={() => this.stay(playerHand)} style={gameButton}>STAY</button>
-            <button disabled={this.state.restartDisabled} onClick={() => this.startGame()} style={gameButton}>PLAY AGAIN</button>
+            <button disabled={this.state.hitDisabled} onClick={() => this.hit("player")} style={gameButtonStyles[this.state.hitDisabled]}>HIT</button>
+            <button disabled={this.state.stayDisabled} onClick={() => this.stay(playerHand)} style={gameButtonStyles[this.state.stayDisabled]}>STAY</button>
+            <button disabled={this.state.restartDisabled} onClick={() => this.startGame()} style={gameButtonStyles[this.state.restartDisabled]}>PLAY AGAIN</button>
           </div>
           </Box>
         </Box>
@@ -514,13 +540,13 @@ class BlackjackGame extends React.Component {
             {this.state.aiMessage}
           </Box>
           <Box>
-            AI Dealer
+            AI Dealer: {this.displayDealerTotal("ai")}
           </Box>
           <Box style={dealerStyle}>
             {this.getCards(aiDealerHand, "dealer")}
           </Box>
           <Box>
-            AI Player
+            AI Player: {aiPlayerHand.getTotalCardValue()}
           </Box>
           <Box style={aiStyle}>
             {this.getCards(aiPlayerHand, "aiPlayer")}
