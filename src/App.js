@@ -6,6 +6,7 @@
  import Header from './components/Header.js'
  import bunkerDownHeader from './images/1920x620BunkerDown.png'
  import BlackjackGame from './components/BlackjackGame.js'
+ import Charter from './components/CharterProject.js'
 
 const App = () => (
   <div className='App'>
@@ -34,6 +35,15 @@ const BunkerDown = () => (
   </div>
 );
 
+const CharterProject = () => (
+  <div className='CharterProject'>
+    <Header pageName='Charter Project'/>
+    <div>
+      <Charter/>
+    </div>
+  </div>
+)
+
 const DInfinity = () => (
   <div className='DInfinity'>
     <Header pageName="DInfinity"/>
@@ -58,13 +68,13 @@ const BlackjackAI = () => (
     <Header pageName="Blackjack AI"/>
     <BlackjackGame/>
   </div>
-
 )
 
 const Main = () => (
   <Switch>
     <Route exact path='/' component={Home}></Route>
     <Route exact path='/BunkerDown' component={BunkerDown}></Route>
+    <Route exact path='/CharterProject' component={CharterProject}></Route>
     <Route exact path='/DInfinity' component={DInfinity}></Route>
     <Route exact path='/Resume' component={Resume}></Route>
     <Route exact path='/BlackjackAI' component={BlackjackAI}></Route>

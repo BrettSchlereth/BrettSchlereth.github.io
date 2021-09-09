@@ -91,13 +91,16 @@ const gameStyle = {
   align: 'center',
   display: 'flex',
   borderRadius: '5px',
-  border: '1px solid black'
+  border: '1px solid black',
+  fontWeight: 'bold',
 }
 
 const messageStyle = {
   background: 'DarkGreen',
   textAlign: 'center',
-  borderRadius: '20px, 20px, 20px, 20px'
+  borderRadius: '20px, 20px, 20px, 20px',
+  fontFamily: 'Arial',
+
 }
 
 const playerSideStyle = {
@@ -140,7 +143,8 @@ const gameButtonStyles = {
     color: "black",
     fontSize: "1.5em",
     borderRadius: '5px',
-    border: '1px solid black'
+    border: '1px solid black',
+    fontWeight: 'bold',
   },
   true: {
     textAlign: 'center',
@@ -150,12 +154,15 @@ const gameButtonStyles = {
     color: "black",
     fontSize: "1.5em",
     borderRadius: '5px',
-    border: '1px solid black'
+    border: '1px solid black',
+    fontWeight: 'bold',
   }
 };
 
 const scoreStyle = {
-  textAlign: 'center'
+  textAlign: 'center',
+  fontWeight: 'bold',
+  paddingTop: '20px',
 }
 
 var deck;
@@ -257,7 +264,7 @@ class BlackjackGame extends React.Component {
     }
 
   async getAiMoves() {
-    while (aiPlayerHand.busted === false) {
+    while (aiPlayerHand.busted === false && aiPlayerHand.total != 21) {
       var predictions = await this.getPrediction()
       console.log("predictions: ", predictions)
       if (predictions[0] >= predictions[1] && predictions[0] > 0.5) {
@@ -500,17 +507,34 @@ class BlackjackGame extends React.Component {
   render() {
     return (
       <div>
+      <h2>
+        What is Blackjack AI?
+      </h2>
+      <h3>
+        Blackjack AI is a trained neural network that learned from over 10,000 hands of Blackjack.
+        This game will allow you to play a hand of Blackjack and compare outcomes with Blackjack AI playing the same hand.
+        Blackjack AI does not have any unfair advantage. It uses the same information you are given as a player.
+      </h3>
+      <h2>
+        Tech Stack
+      </h2>
+      <h3>
+        <p>AI: Python, keras, Tensorflow, TensorflowJS, and JavaScript</p>
+        <p>Website: ReactJS, JavaScript, html, CSS3</p>
+        <p>Hosted on Github Pages</p>
+      </h3>
+      <h2>
+        Rules
+      </h2>
+      <h3>
+        <p>Get the total of your cards closest to 21 without going over</p>
+        <p>There are 2 decks of cards. Dealer stays on soft 17. No splitting (sorry)</p>
+      </h3>
       <Box style={scoreStyle}>
-      Total Games: {totalGames}
-      </Box>
-      <Box style={scoreStyle}>
-        Player Wins: {this.state.playerWinPercentage}% AI Wins: {this.state.aiWinPercentage}%
-      </Box>
-      <Box style={scoreStyle}>
-        Player Pushes: {this.state.playerPushPercentage}% AI Pushes: {this.state.aiPushPercentage}%
-      </Box>
-      <Box style={scoreStyle}>
-        Player Losses: {this.state.playerLossPercentage}% AI Loss: {this.state.aiLossPercentage}%
+        <p>Total Games: {totalGames}</p>
+        <p>Player Wins: {this.state.playerWinPercentage}% AI Wins: {this.state.aiWinPercentage}%</p>
+        <p>Player Pushes: {this.state.playerPushPercentage}% AI Pushes: {this.state.aiPushPercentage}%</p>
+        <p>Player Losses: {this.state.playerLossPercentage}% AI Loss: {this.state.aiLossPercentage}%</p>
       </Box>
       <Box style={gameStyle}>
         <Box style={playerSideStyle}>

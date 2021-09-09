@@ -17,6 +17,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "rebass": "^4.0.7",
+    "sql.js": "^1.6.1",
+    "sql.js-httpvfs": "^0.8.11",
     "styled-system": "^5.1.5"
   },
   "scripts": {

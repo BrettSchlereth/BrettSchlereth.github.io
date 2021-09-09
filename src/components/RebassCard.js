@@ -7,10 +7,12 @@ import resumeImage from '../images/ResumeImage.png'
 import blackjackImage from '../images/BlackjackImage.png'
 import Boop from './Boop.js'
 
-var projects = {"Resume": {"type":"Master Resume", "image":resumeImage, "Link": '/Resume'},
-                "Bunker Down": {"type":"Video Game", "image":bunkerDownImage, "Link": '/BunkerDown'},
-                "DInfinity": {"type":"Video Game", "image":dInfinityImage, "Link": '/DInfinity'},
-                "Blackjack AI": {"type": "Neural Network", "image":blackjackImage, "Link": './BlackjackAI'}
+var projects = {//"Resume": {"type":"Master Resume", "image":resumeImage, "Link": '/Resume'},
+                //"Bunker Down": {"type":"Video Game", "image":bunkerDownImage, "Link": '/BunkerDown'},
+                //"DInfinity": {"type":"Video Game", "image":dInfinityImage, "Link": '/DInfinity'},
+                "Blackjack AI": {"type": "Neural Network", "image":blackjackImage, "Link": './BlackjackAI'},
+                "Charter Project": {"type": "SQL React Project", "image":resumeImage, "Link": './CharterProject'},
+
                }
 
 
