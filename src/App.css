@@ -41,6 +41,10 @@ h3 {
   font-weight: bold;
 }
 
+tr:nth-child(even) {
+  background-color: rgb(31, 40, 51);
+}
+
 #grid {
   height: 200px;
   width: 200px;
